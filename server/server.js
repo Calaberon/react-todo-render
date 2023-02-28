@@ -6,9 +6,21 @@ const pool = require('./db')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const path = require('path')
+const { Pool } = require('pg')
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.join(__dirname, "build")));
+
+app.get("/", (req, res) => {
+    try {
+      res.sendFile(path.join(__dirname, "build", "index.html"));
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).send(error);
+    }
+  });
 
 //get all todos
 app.get('/todos/:userEmail', async (req, res) => {
