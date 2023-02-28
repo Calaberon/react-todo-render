@@ -1,4 +1,4 @@
-const PORT = process.env.PORT ?? 8000
+const PORT = process.env.PORT || 8000
 const express = require('express')
 const { v4: uuidv4 } = require('uuid')
 const app = express()
@@ -8,14 +8,24 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 const { Pool } = require('pg')
+const dotenv = require('dotenv')
+dotenv.config()
+
 
 app.use(cors())
 app.use(express.json())
-app.use(express.static(path.join(__dirname, "build")));
+app.use(express.static(path.join(__dirname, "./client/build")));
+
+//pool is new
+
+const pool = new Pool({
+    connectionString: process.env.REACT_APP_SERVERURL
+
+})
 
 app.get("/", (req, res) => {
     try {
-      res.sendFile(path.join(__dirname, "build", "index.html"));
+      res.sendFile(path.join(__dirname, "./client/build", "index.html"));
     } catch (error) {
       console.log(error.message);
       res.status(500).send(error);
